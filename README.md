@@ -12,7 +12,7 @@
 [index10.html](basic/index10.html)<br>
 
 ## Aula do dia 05/09/2018
-[movies_d3.html](intro_d3/movies_d3.html)<br>
+[movies_d3.html](d3_intro/movies_d3.html)<br>
 
 ---
 
