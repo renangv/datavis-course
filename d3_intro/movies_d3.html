@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Gráficos Aula 09</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+<div id="chart_1"></div>
+<div id="chart_2"></div>
+<div id="chart_3"></div>
+<div id="chart_4"></div>
+<script type="text/javascript">
+    function render(data, id,  titulo, info, color, comparator) {
+        d3.select(id).append("h1").text(titulo)
+        d3.select(id).selectAll("div.h-bar")
+                .data(data)
+            .enter().append("div")
+            .attr("class", "h-bar")
+            .append("span");
+        
+        d3.select(id).selectAll("div.h-bar")
+                .data(data)
+            .attr("class", "h-bar").style('background-color', color)
+            .style("width", function (d) {
+                return plot(info,d) + "px";
+            })
+            .select("span")
+                .text(function (d) {
+                    if (info == 'G'){ // verifica se os dados são os aninhados para plotar o gráfico 4, onde deve plotar o gênero
+                        return d.Genre;
+                    } else { // caso contrario, exibe o nome do filme
+                        return d.Film;    
+                    }                    
+                });
+         if(comparator)
+            d3.select(id)
+                .selectAll("div.h-bar") 
+                .sort(comparator);
+    }
+
+    // Uma função foi criada para cada uma das comparações necessárias para plotar os 4 gráficos
+
+    let comparePorBilheteria = function (a, b) { 
+        return a.Worldwide_Gross_M > b.Worldwide_Gross_M?-1:1;
+    };
+
+    let comparePorOrcamento = function (a, b) { 
+        return a.Budget_M > b.Budget_M?-1:1;
+    };
+
+    let comparePorLucro = function (a, b) { 
+        return (a.Worldwide_Gross_M - a.Budget_M) > (b.Worldwide_Gross_M - b.Budget_M)?-1:1;
+    };
+
+    let comparePorOrcamento_Genero = function(a,b){
+        return a.value > b.value?-1:1;  
+    }
+
+    //esta função retorna qual valor deve ser utilizado para determinar o tamanho das barras
+
+    let plot = function(info,d){
+        if (info === 'B'){ // para o Gráfico de Bilheteria
+            return d['Worldwide_Gross_M'] / 3
+        }
+
+        if (info === 'O'){ // para o Gráfico de Orçamento
+            return d['Budget_M'] * 2
+        }
+
+        if (info === 'L'){ // para o Gráfico de Lucro
+            return (d['Worldwide_Gross_M'] - d['Budget_M']) / 3
+        }
+
+        if (info === 'G'){ // para o Gráfico de Bilheteria por Gênero
+            return (d['Worldwide_Gross_M']) / 5
+        }
+    };
+    
+    d3.json("data/movies.json").then(function(json){ 
+        render(json, "#chart_1","Bilheterias dos Filmes", 'B', 'red', comparePorBilheteria);
+        render(json, "#chart_2","Orçamento dos Filmes", 'O', 'blue', comparePorOrcamento);
+        render(json, "#chart_3","Lucro dos Filmes", 'L', 'green', comparePorLucro);   
+
+        // aqui é agrupado na nova estrutura de dados 'nested_data' os dados por 2 campos: o gênero e o somatória da bilheteria dos filmes
+        
+        let nested_data = d3.nest()
+            .key(function(d) { return d.Genre; })
+            .rollup(function(d) { 
+            return d3.sum(d, function(g) {return g.Worldwide_Gross_M; });
+        }).entries(json);
+
+        // Aqui os campos são renomeados: key vira Genre e value vira Worldwide_Gross_M
+
+        nested_data.forEach(function(d) {
+            d.Genre = d.key;
+            d.Worldwide_Gross_M = d.value
+            console.log(d);
+        });
+
+        render(nested_data, "#chart_4","Bilheteria por Gênero", 'G', 'black', comparePorOrcamento_Genero);  
+        console.log("renan");
+    });
+ 
+</script>
+</body>
+</html>
