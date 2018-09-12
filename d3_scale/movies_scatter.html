@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Scatterplot</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+<div id="chart"></div>
+<script type="text/javascript">
+    
+    function render(dataset) {
+        // Primeiro definimos o objeto margin
+        let margin = {top: 40, right: 40, bottom: 40, left: 40};
+    
+        // Depois definimos w e h como as dimensões internas
+        // da área do gráfico (área útil)
+        let w = 1200 - margin.left - margin.right;
+        let h = 1800 - margin.top - margin.bottom;
+
+        // Depois um elemento g no svg que vai transladar a origem 
+        // do gráfico como sendo a origem da área útil do gráfico
+
+        let svg = d3.select("#chart")
+            .append("svg")
+                .attr("width", w + margin.left + margin.right)
+                .attr("height", h + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        let xScale = d3.scaleLinear()
+            .domain([0,d3.max(dataset, function(d) {
+                return d.Budget_M;
+                })])
+                .range([0,w]);
+    
+        let xAxis = d3.axisBottom().scale(xScale);
+
+        let yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function(d) {
+                return d.Worldwide_Gross_M;
+                })])
+                .range([h,0]);
+
+        let yAxis = d3.axisLeft().scale(yScale);
+
+        svg.selectAll("circle")
+        .data(dataset)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) {
+        return xScale(d.Budget_M);
+        })
+        .attr("cy", function(d) {
+        return yScale(d.Worldwide_Gross_M);
+        })
+        .attr("r", 5);
+
+        // Depois adicione os labels
+        
+        
+        svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("x", function(d){
+        return xScale(d.Budget_M);
+        })
+        .attr("y", function(d){
+        return yScale(d.Worldwide_Gross_M);
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("fill", "red")
+        .text(function(d) {
+        return d.Film;
+        });
+    
+        
+        svg.append("g")
+           .attr("transform", "translate(0," + h + ")")
+           .call(xAxis);
+
+        svg.append("g")
+           .call(yAxis);
+        
+        svg.append("text")
+            .attr("transform", "translate(" + (w/2) + "," + (h + margin.bottom) + ")")
+            .style("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "12px")
+            .text("Orçamento");
+
+        // Título eixo vertical
+        svg.append("text")
+           .attr("transform", "rotate(-90)")
+           .attr("y", 0 - margin.left)
+           .attr("x",0 - (h / 2))
+           .attr("dy", "1em")
+           .style("text-anchor", "middle")
+           .attr("font-family", "sans-serif")
+           .attr("font-size", "12px")
+           .text("Bilheteria");
+            }
+
+    d3.json("data/movies.json").then(function(json){ 
+            render(json);
+        });
+</script>
+<h1>Respostas: Observamos que há uma pequena correlação do orçamento e a bilheteria, contudo ela é muito pequena. O filme 'Avatar' é um outlier</h1>
+</body>
+</html>
