@@ -17,6 +17,11 @@
 ## Aula do dia 12/09/2018
 [movies_scatter.html](d3_scale/movies_scatter.html)<br>
 
+## Aula do dia 17/09/2018
+[01_scatterplot_part1.html](d3_update/01_scatterplot_part1.html)<br>
+[01_scatterplot_part2.html](d3_update/01_scatterplot_part2.html)<br>
+[01_scatterplot_part3.html](d3_update/01_scatterplot_part3.html)<br>
+
 ---
 
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
