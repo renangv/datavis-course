@@ -22,6 +22,8 @@
 [01_scatterplot_part2.html](d3_update/01_scatterplot_part2.html)<br>
 [01_scatterplot_part3.html](d3_update/01_scatterplot_part3.html)<br>
 
+## Aula do dia 24/09/2018
 ---
 
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
+
