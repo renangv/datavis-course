@@ -108,14 +108,16 @@
 	  //use a gap of 65, this number is very obscure. It seems to depend on the width of the chart and on the number of dimensions. It was found using trial and error.
 	  //set elasticY to true
 
+	  let xScale = d3.scaleLinear()
+                           .domain([0,8]);
+
 	   magnitudeChart.width(480)
                 .height(150)
-                .gap(56)
+                .gap(52)
                 .dimension(magnitudeDimension)
                 .group(eqByMagnitude)
-                .x(d3.scaleOrdinal())
-                .elasticY(true)
-                .xUnits(dc.units.ordinal)
+                .x(xScale)
+                .elasticY(true)               
                 .brushOn(false);               
              
 	  
@@ -133,13 +135,16 @@
 	  // 480 x 150
 	  // x dimension domain: [0, 100]
 	  
+	  let xScale2 = d3.scaleLinear()
+                           .domain([0,100]);
+
 	  depthChart.width(480)
                 .height(150)
+                .gap(1)
                 .dimension(depthDimension)
                 .group(elementByDepth)
-                .x(d3.scaleOrdinal())
-                .elasticY(true)
-                .xUnits(dc.units.ordinal)
+                .x(xScale2)
+                .elasticY(true)                
                 .brushOn(false);   
 	 
 	  // Configure Time line graph
