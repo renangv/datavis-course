@@ -28,7 +28,15 @@
 <body>
   <main role="main" class="container">
     <div class='row'>
-    	<div id="mapid"></div>    	
+    	<div id="mapid2" class="col-6">
+    	</div>
+    	<div class = "col-6">
+	    	<div id='crimesPorTipo'>
+	      		<h4> Número de ocorrências por Tipo de Crime </h4>
+	    	</div>
+	    	<div id='crimesPorDia'>
+		  		<h4> Crimes por dia </h4>
+	    	</div>   	    
     </div>	
   </main>
   <script type="text/javascript">
@@ -36,16 +44,109 @@
 	
 	// load data from a csv file
 	d3.csv("data/chicago_crimes_sep_2018.csv").then(function (data) {
-
-    console.log(data)
-
-	// format our data
 	  
-	   
+	let map = L.map('mapid2').setView([41.8331396,-87.7463386], 11);
+	   L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+		attribution: '&copy; Map tiles by Carto, under CC BY 3.0. Data by OpenStreetMap, under ODbL.',
+		maxZoom: 17
 
-	//dc.renderAll();
+	   }).addTo(map);
 
+
+	let colorScale = d3.scaleOrdinal()
+		.domain(["HOMICIDE", "ROBBERY", "BURGLARY"])
+		.range(["#ca0020", "#0571b0", "#fdae61"]);
+
+	let parseDate = d3.timeParse("%m/%d/%Y");	
+	data.forEach(function(d){
+    	d.Date = parseDate(d.Date.substr(0,10));
+    });
+	
+	data.forEach(function(d){
+	   	let cor = colorScale(d["Primary Type"]);
+	   	let circle = L.circle([d.Latitude,d.Longitude],150, {
+	   		color: cor,
+	   		weight: 2,
+	   		fillColor: cor,
+	   		fillOpacity: 0.5	   		
+	   }).addTo(map);    
+	   	circle.bindPopup("<b>Tipo de Crime: </b>" + d["Primary Type"] + "<br>"
+          + "<b>Data: </b>" + d.Date);
+  	   });   		
+
+
+	let totalCrimesChart = dc.barChart('#crimesPorTipo');
+    let crimesDiaChart = dc.compositeChart('#crimesPorDia');
+    
+	let facts = crossfilter(data);
+
+	let crimesDimension = facts.dimension(function(d){  //(Chart 1)
+	  	return d["Primary Type"];
 	});
+
+	let dateDim = facts.dimension(function(d){
+        return d.Date;
+    });
+
+	let burglaryByDayGroup = dateDim.group().reduceSum(function(d){
+		return (d["Primary Type"] ==="BURGLARY");
+	});
+
+	let homicideByDayGroup = dateDim.group().reduceSum(function(d){
+		return (d["Primary Type"] === "HOMICIDE");
+	});
+
+    let robberyByDayGroup = dateDim.group().reduceSum(function(d){
+    	return (d["Primary Type"] === "ROBBERY");
+	});
+
+    console.log(homicideByDayGroup.all())
+    console.log(burglaryByDayGroup.all())
+    console.log(robberyByDayGroup.all())
+
+
+	let crimesPorTipo = crimesDimension.group();
+
+	let xScale = d3.scaleLinear().domain([1,3]);
+ 	
+    totalCrimesChart
+                .width(768)
+                .height(480)
+                .margins({top: 40, right: 40, bottom: 40, left: 40})
+                .x(d3.scaleBand())
+                .gap(1)
+                .xUnits(dc.units.ordinal)
+                .xAxisLabel("Tipo de Crime")
+                .yAxisLabel("Número de Ocorrências")                
+                .dimension(crimesDimension)
+                .group(crimesPorTipo);
+
+    let xScale2 = d3.scaleTime().domain([dateDim.bottom(1)[0].Date, dateDim.top(1)[0].Date]);
+
+  	crimesDiaChart.width(800)
+                  .height(400)
+                  .margins({top: 50, right: 50, bottom: 25, left: 40})
+                  .dimension(dateDim)
+                  .x(xScale2)
+                  .xUnits(d3.timeDays)
+                  .renderHorizontalGridLines(true)
+                  .legend(dc.legend().x(700).y(5).itemHeight(13).gap(5))
+                  .brushOn(false)    
+                  .compose([
+                  dc.lineChart(crimesDiaChart)
+                                .group(burglaryByDayGroup, 'Burglary')
+                                .linearColors(["#fdae61"]),
+                  dc.lineChart(crimesDiaChart)
+                                .group(homicideByDayGroup, 'Homicide')
+                                .linearColors(["#ca0020"]),
+                  dc.lineChart(crimesDiaChart)
+                                .group(robberyByDayGroup, 'Robbery')
+                                .linearColors(["#0571b0"])]);
+    
+
+    dc.renderAll();
+	});
+
 	</script>
 	 <!-- Bootstrap javascript files -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
