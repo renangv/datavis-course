@@ -29,5 +29,8 @@
 ## Aula do dia 26/09/2018
 [earthquakes.html](d3_crossfilter_2/earthquakes.html)<br>
 
+## Aula do dia 03/10/2018
+[chicago.html](d3_crossfilter_2/chicago.html)<br>
+
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
 
