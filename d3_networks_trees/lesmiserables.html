@@ -60,7 +60,7 @@
 
            let colorScale = d3.scaleOrdinal()
                               .domain([0,1,2,3,4,5,6,7,8,9,10])
-                              .range(["#ca0020", "#0571b0", "#fdae61"]);
+                              .range(["#3cb44b", "#e6194b", "#ffe119", "#4363d8", "#f58231", "#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe", "#008080"]);
 
            const node = vis.append("g")
                           .selectAll("circle")
@@ -68,7 +68,7 @@
                           .enter()
                           .append("circle")                          
                           .attr("r", 7)
-                          .attr("fill","#fd8d3c")
+                          .attr("fill", d => colorScale(d.group))
                           //.append("title")
                           //.text("teste")
                           .attr("class", "node")
