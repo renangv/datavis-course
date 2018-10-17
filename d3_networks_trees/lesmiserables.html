@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Similar Songs Network</title>
+    <title> Os miseráveis</title>
     
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -14,17 +14,11 @@
   <body>
     <main role="main" class="container">
       <header>
-      <h1>Similar Song Network</h1>
-      <p>Songs similar to one another according to <a href="http://www.last.fm/api">last.fm</a> are linked together. Song nodes are sized based on playcounts, and colored by artist.</p>
-      <p><u>Raiz da árvore:</u> Lady Gaga: Poker Face</p>
+      <h1>Visualização dos dados da obra "Os miseráveis"</h1>      
       </header>
       <div id="main" role="main">
         <div id="vis"></div>
-      </div>
-      <footer>
-      <p>Data from <a href="http://www.last.fm/api/show/track.getSimilar">last.fm</a>. Some songs include additional links for effect.<br/>Popular songs are defined as those with playcounts above the median for all songs in network. This example is a simpler version of the <a href="http://flowingdata.com/2012/08/02/how-to-make-an-interactive-network-visualization/">tutorial</a> by <a href="http://vallandingham.me/">Jim Vallandingham</a>.</p>
-
-      </footer>
+      </div>            
     </main> <!--! end of #container -->
     <!-- Bootstrap javascript files -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -42,7 +36,7 @@
                 .attr("viewBox", [-width / 2, -height / 2, width, height]);
 
         // Read the contents of data/songs.json file and process it as a graph variable
-        d3.json("data/songs.json").then(function (graph) {
+        d3.json("data/lesmiserables.json").then(function (graph) {
           
           // Set the nodes and links
 
@@ -63,21 +57,18 @@
 
            // create node svg elements
            //let scale = d3.scaleSqrt().domain([nodes.playcount.bottom(1)[0], nodes.playcount.top(1)[0]].range([2, 20]));
-           
-           let scale = d3.scaleSqrt()
-                        .domain([
-                          d3.min(nodes, function(d) {return d.playcount}), 
-                          d3.max(nodes, function(d) {return d.playcount})
-                        ])
-                        .range([2, 20]);
-           
+
+           let colorScale = d3.scaleOrdinal()
+                              .domain([0,1,2,3,4,5,6,7,8,9,10])
+                              .range(["#ca0020", "#0571b0", "#fdae61"]);
 
            const node = vis.append("g")
                           .selectAll("circle")
                           .data(nodes)
                           .enter()
                           .append("circle")                          
-                          .attr("r", d => scale(d.playcount))
+                          .attr("r", 7)
+                          .attr("fill","#fd8d3c")
                           //.append("title")
                           //.text("teste")
                           .attr("class", "node")
@@ -85,7 +76,7 @@
             
             node.append("title")
               .text(function (d) {
-                return d.artist +':' + d.name;
+                return d.id +', Grupo ' + d.group;
             });
            
            // define function ticked
