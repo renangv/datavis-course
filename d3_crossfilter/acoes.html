@@ -27,6 +27,7 @@
                 d.facebook_porc = ((+d.facebook) - (+data[0].facebook))/(+data[0].facebook)*100;
             });
 
+
             //criando um crossfilter
             let facts = crossfilter(data);
 
@@ -37,13 +38,16 @@
             let teslaByDayGroup = dateDim.group().reduceSum(function(d){
                 return d.tesla_porc;
             });
+            console.log(teslaByDayGroup.all())
 
             let fbByDayGroup = dateDim.group().reduceSum(function(d){
                 return d.facebook_porc;
             });
+            console.log(fbByDayGroup.all())
+
 
             let xScale = d3.scaleTime()
-                           .domain([dateDim.bottom(1)[0].date, dateDim.top(1)[0].dtg]);
+                           .domain([dateDim.bottom(1)[0].date, dateDim.top(1)[0].date]);
 
             compositeChart.width(800)
                      .height(400)
