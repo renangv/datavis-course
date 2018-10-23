@@ -36,5 +36,9 @@
 [songs.html](d3_networks_trees/songs.html)<br>
 [lesmiserables.html](d3_networks_trees/lesmiserables.html)<br>
 
+## Aula do dia 23/10/2018
+[crimes.html](color-d3/crimes.html)<br>
+[usa.html](color-d3/usa.html)<br>
+
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
 
