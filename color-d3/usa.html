@@ -40,6 +40,10 @@ let rateById = d3.map();
 //Create a quantize color scale here
 // Consider that the unemployment rate goes from 0 to 10% (.10)
 // display the colors in nine different levels of greens
+let color = d3.scaleQuantize()
+              .domain([2,10])
+              .range(d3.schemeGreens[9]);
+
 let path = d3.geoPath();
 
 let svg = d3.select("#map").append("svg")
@@ -53,16 +57,18 @@ let promises = [
 
 Promise.all(promises).then(ready);
 
-function ready([us]) {
+function ready([us]) { 
   
   svg.append("g")
       .attr("class", "counties")
     .selectAll("path")
       .data(topojson.feature(us, us.objects.counties).features)
-    .enter().append("path")
-      .attr("fill", function(d) { return "#777"; })
-      .attr("d", path);
-
+    .enter().append("path")      
+      .attr("fill", function(d) { return color(rateById.get(d.id)); })
+      .attr("d", path)
+      .append("title")
+      .text(d => "Taxa de Desemprego: "+ rateById.get(d.id));            
+      
   svg.append("path")
       .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
       .attr("class", "states")
