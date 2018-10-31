@@ -40,5 +40,9 @@
 [crimes.html](color-d3/crimes.html)<br>
 [usa.html](color-d3/usa.html)<br>
 
+## Aula do dias 31/10/2018
+[earthquakes.html](d3_interactive/earthquakes.html)<br>
+[usa.html](d3_interactive/usa.html)<br>
+
 Para saber mais sobre a sintaxe markdown, veja [este guia](https://guides.github.com/features/mastering-markdown/).
 
