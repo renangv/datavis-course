@@ -40,7 +40,7 @@
 [crimes.html](color-d3/crimes.html)<br>
 [usa.html](color-d3/usa.html)<br>
 
-## Aula do dias 31/10/2018
+## Aula do dia 31/10/2018
 [earthquakes.html](d3_interactive/earthquakes.html)<br>
 [usa.html](d3_interactive/usa.html)<br>
 
