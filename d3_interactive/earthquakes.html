@@ -91,6 +91,26 @@
     maxZoom: 17
     }).addTo(map);
     
+    map.on('moveend', updateFilters);
+
+    //handling map events:
+    let visibleMarkers = [];
+
+    function updateFilters(){
+      visibleMarkers = [];
+      
+      markerLayer.eachLayer(function(layer) {
+        if( map.getBounds().contains(layer.getLatLng()) )
+          visibleMarkers.push(layer.publicid);
+          //add layer.publicid to some array visibleMarkers
+        });
+
+      idDimension.filterFunction(function(d){
+        return visibleMarkers.indexOf(d) > -1;
+      });
+      dc.redrawAll();
+    }
+
     // load data from a csv file
     d3.csv("data/earthquakes.csv").then(function (data) {
       // format our data
@@ -240,6 +260,7 @@
         }
         markerLayer = L.layerGroup(todisplay).addTo(map); //add it again passing the array of markers
     }
+
 
     });
     
